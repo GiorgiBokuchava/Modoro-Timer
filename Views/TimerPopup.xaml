@@ -1,0 +1,71 @@
+﻿<Window  
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"  
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"  
+    xmlns:shell="clr-namespace:System.Windows.Shell;assembly=PresentationFramework"
+    x:Class="Modoro_Timer.Views.TimerPopup"  
+    Width="305" Height="330"  
+    WindowStyle="None"  
+    AllowsTransparency="True"  
+    Background="Transparent"  
+    Topmost="True"  
+    ShowInTaskbar="False"
+    ShowActivated="True"
+    Focusable="True">
+
+    <!-- 1. WindowChrome for rounded corners & shadow -->
+    <shell:WindowChrome.WindowChrome>
+        <shell:WindowChrome  
+            CornerRadius="7"  
+            GlassFrameThickness="0"  
+            UseAeroCaptionButtons="False" />
+    </shell:WindowChrome.WindowChrome>
+
+
+    <!-- 2. Tint & layout -->
+    <Border  
+        Background="#FF151B28"  
+        CornerRadius="7"  
+        Padding="12">
+        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+
+            <!-- Remaining time -->
+            <TextBlock Text="{Binding RemainingTime}"  
+                       FontSize="36"  
+                       Foreground="White"  
+                       HorizontalAlignment="Center"  
+                       Margin="0,0,0,10"/>
+
+            <ItemsControl ItemsSource="{Binding SessionDots}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center"/>
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Ellipse Width="8" Height="8" Margin="4"
+               Fill="{Binding FillBrush}"/>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+
+            <!-- Session type -->
+            <TextBlock Text="{Binding SessionTypeDisplay}"  
+                       FontSize="14"  
+                       Foreground="White"  
+                       HorizontalAlignment="Center"  
+                       Margin="0,0,0,10"/>
+
+            <!-- Controls -->
+            <StackPanel Orientation="Horizontal"  
+                        HorizontalAlignment="Center">
+                <Button Content="⏯" Width="40" Margin="0,0,10,0"  
+                        Command="{Binding TogglePauseResumeCommand}"/>
+                <Button Content="⏹" Width="40" Margin="0,0,10,0"  
+                        Command="{Binding StopCommand}"/>
+                <Button Content="⏭" Width="40"  
+                        Command="{Binding SkipCommand}"/>
+            </StackPanel>
+        </StackPanel>
+    </Border>
+</Window>
