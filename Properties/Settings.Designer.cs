@@ -46,5 +46,29 @@ namespace Modoro_Timer.Properties {
                 this["LastClickY"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("-1")]
+        public double PopupLeft {
+            get {
+                return ((double)(this["PopupLeft"]));
+            }
+            set {
+                this["PopupLeft"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("-1")]
+        public double PopupTop {
+            get {
+                return ((double)(this["PopupTop"]));
+            }
+            set {
+                this["PopupTop"] = value;
+            }
+        }
     }
 }

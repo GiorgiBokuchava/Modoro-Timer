@@ -7,7 +7,11 @@ using System.Runtime.Versioning;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
+using Control = System.Windows.Forms.Control;
+using MouseButtons = System.Windows.Forms.MouseButtons;
+using NotifyIcon = System.Windows.Forms.NotifyIcon;
 using Point = System.Drawing.Point;
+using Screen = System.Windows.Forms.Screen;
 
 namespace Modoro_Timer
 {
@@ -18,67 +22,69 @@ namespace Modoro_Timer
 		private TimerPopup _popup = null!;
 		private ModoroManager _modoro = null!;
 		private Point _lastClickPx;
-		internal int LastTrayClickTick;
+		private DateTime _popupHideTime = DateTime.MinValue;
 
 		protected override void OnStartup(StartupEventArgs e)
 		{
 			base.OnStartup(e);
-
 			_modoro = new ModoroManager();
 			_modoro.OnTickUpdate += UpdateTooltip;
-
 			_popup = new TimerPopup(_modoro);
-			_popup.Hide();
+
+			// Outside popup click behavior
+			_popup.Deactivated += (s, args) =>
+			{
+				_popup.Hide();
+				_popupHideTime = DateTime.Now;
+			};
 
 			_trayIcon = new NotifyIcon
 			{
-				Icon = new Icon("Assets/icon.ico"),
+				Icon = new System.Drawing.Icon("Assets/icon.ico"),
 				Text = "Modoro Timer",
 				Visible = true
 			};
 
-			_lastClickPx = new Point(
-				Settings.Default.LastClickX,
-				Settings.Default.LastClickY
-			);
-
-			_trayIcon.MouseUp += (s, args) =>
+			// Tray icon click behavior
+			_trayIcon.MouseDown += (s, args) =>
 			{
 				if (args.Button != MouseButtons.Left)
 					return;
 
 				_lastClickPx = Control.MousePosition;
-
 				Settings.Default.LastClickX = _lastClickPx.X;
 				Settings.Default.LastClickY = _lastClickPx.Y;
 				Settings.Default.Save();
 
-				TogglePopupAt(_lastClickPx);
+				if (!_popup.IsVisible &
+					(DateTime.Now.Subtract(_popupHideTime).TotalMilliseconds > 200))
+				{
+					ShowPopupAt(_lastClickPx);
+				}
 			};
 
 			new TrayService(_modoro, _trayIcon);
 
-
 			HotkeyManager.Current.AddOrReplace(
 				"TogglePopup",
 				Key.F, ModifierKeys.Alt,
-				(s, a) => TogglePopupAt(_lastClickPx)
+				(s, args) => Dispatcher.Invoke(() =>
+				{
+					if (_popup.IsVisible)
+						_popup.Hide();
+					else
+						ShowPopupAt(new Point(Settings.Default.LastClickX, Settings.Default.LastClickY));
+				})
 			);
 		}
 
-		private void TogglePopupAt(Point clickPx)
+		private void ShowPopupAt(Point clickPx)
 		{
-			if (_popup.IsVisible)
-			{
-				_popup.Hide();
-				return;
-			}
-
 			var screen = Screen.FromPoint(clickPx);
 			var wa = screen.WorkingArea;
 			var dpiInfo = VisualTreeHelper.GetDpi(_popup);
-			double sx = dpiInfo.DpiScaleX;
-			double sy = dpiInfo.DpiScaleY;
+			double sx = dpiInfo.DpiScaleX, sy = dpiInfo.DpiScaleY;
+
 			var clickDip = new System.Windows.Point(
 				clickPx.X / sx,
 				clickPx.Y / sy
@@ -89,13 +95,13 @@ namespace Modoro_Timer
 			double maxX = (wa.Right / sx) - _popup.Width;
 			leftDip = Math.Max(minX, Math.Min(leftDip, maxX));
 
-			double bottomDip = (wa.Bottom / sy) - 5;
-			double topDip = bottomDip - _popup.Height;
+			double bottomDip = wa.Bottom / sy;
+			double topDip = bottomDip - _popup.Height - 5;
 
-			_popup.ShowActivated = true;
 			_popup.Left = leftDip;
 			_popup.Top = topDip;
 			_popup.Topmost = true;
+			_popup.ShowActivated = true;
 			_popup.Show();
 			_popup.Focus();
 			_popup.Activate();

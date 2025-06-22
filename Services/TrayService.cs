@@ -1,24 +1,27 @@
 ﻿using Modoro_Timer.Models;
 using System.Drawing.Drawing2D;
 using System.Drawing.Text;
-using System.Windows.Forms;
+using System.Runtime.Versioning;
 
 namespace Modoro_Timer.Services
 {
-	public class TrayService
+	[SupportedOSPlatform("windows6.1")]
+	public class TrayService : IDisposable
 	{
 		private readonly NotifyIcon _trayIcon;
 		private readonly ModoroManager _manager;
+		private readonly Icon _defaultIcon;
 		private Icon? _prevIcon;
 
 		public TrayService(ModoroManager manager, NotifyIcon trayIcon)
 		{
 			_manager = manager;
 			_trayIcon = trayIcon;
+			_defaultIcon = new Icon("Assets/icon.ico");
 
 			_manager.OnTickUpdate += time =>
 			{
-				_trayIcon.Text = $"Modoro Timer - {time} remaining";
+				_trayIcon.Text = $"Modoro Timer – {time} remaining";
 
 				double total = _manager.CurrentSessionType switch
 				{
@@ -29,16 +32,25 @@ namespace Modoro_Timer.Services
 				double elapsed = total - _manager.GetRemainingSeconds();
 				double fraction = Math.Clamp(elapsed / total, 0, 1);
 
-				UpdateIcon(fraction);
+				var icon = CreateProgressIcon(fraction);
+				_trayIcon.Icon = icon;
+				_prevIcon?.Dispose();
+				_prevIcon = icon;
+			};
+
+			_manager.OnReset += () =>
+			{
+				_trayIcon.Icon = _defaultIcon;
+				_prevIcon?.Dispose();
+				_prevIcon = null;
 			};
 		}
 
 		private Icon CreateProgressIcon(double fraction)
 		{
 			const int size = 32, thickness = 5;
-
-			using var bitmap = new Bitmap(size, size);
-			using var g = Graphics.FromImage(bitmap);
+			using var bmp = new Bitmap(size, size);
+			using var g = Graphics.FromImage(bmp);
 
 			g.Clear(Color.Transparent);
 			g.SmoothingMode = SmoothingMode.AntiAlias;
@@ -55,19 +67,17 @@ namespace Modoro_Timer.Services
 			float sweep = (float)(fraction * 360);
 			g.DrawArc(fgPen, thickness / 2, thickness / 2, size - thickness, size - thickness, -90, sweep);
 
-			IntPtr hIcon = bitmap.GetHicon();
+			IntPtr hIcon = bmp.GetHicon();
 			var icon = Icon.FromHandle(hIcon);
 			var clone = (Icon)icon.Clone();
 			icon.Dispose();
 			return clone;
 		}
 
-		private void UpdateIcon(double fraction)
+		public void Dispose()
 		{
-			var newIcon = CreateProgressIcon(fraction);
-			_trayIcon.Icon = newIcon;
 			_prevIcon?.Dispose();
-			_prevIcon = newIcon;
+			_defaultIcon?.Dispose();
 		}
 	}
 }
