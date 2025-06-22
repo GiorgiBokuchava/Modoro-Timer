@@ -51,20 +51,9 @@ public class ModoroManager : INotifyPropertyChanged
 
 	public ObservableCollection<DotViewModel> SessionDots { get; } = new();
 
-	private int _currentSessionIndex;
-	public int CurrentSessionIndex
-	{
-		get => _currentSessionIndex;
-		set
-		{
-			if (_currentSessionIndex != value)
-			{
-				_currentSessionIndex = value;
-				OnPropertyChanged(nameof(CurrentSessionIndex));
-				UpdateDotStates();
-			}
-		}
-	}
+	private readonly TimeSpan _focusDuration = TimeSpan.FromMinutes(25);
+	private readonly TimeSpan _shortBreakDuration = TimeSpan.FromMinutes(5);
+	private readonly TimeSpan _longBreakDuration = TimeSpan.FromMinutes(15);
 
 	public ModoroManager()
 	{
