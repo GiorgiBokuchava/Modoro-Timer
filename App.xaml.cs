@@ -57,9 +57,13 @@ namespace Modoro_Timer
 				Settings.Default.Save();
 
 				if (!_popup.IsVisible &
-					(DateTime.Now.Subtract(_popupHideTime).TotalMilliseconds > 200))
+					(DateTime.Now.Subtract(_popupHideTime).TotalMilliseconds > 500))
 				{
 					ShowPopupAt(_lastClickPx);
+				}
+				else if (_popup.IsVisible)
+				{
+					_popup.Hide();
 				}
 			};
 
@@ -96,15 +100,29 @@ namespace Modoro_Timer
 			leftDip = Math.Max(minX, Math.Min(leftDip, maxX));
 
 			double bottomDip = wa.Bottom / sy;
-			double topDip = bottomDip - _popup.Height - 5;
+			double topDip = bottomDip - _popup.Height - 10;
 
 			_popup.Left = leftDip;
 			_popup.Top = topDip;
-			_popup.Topmost = true;
 			_popup.ShowActivated = true;
+			_popup.Topmost = true;
 			_popup.Show();
 			_popup.Focus();
 			_popup.Activate();
+
+			// Probably redundant
+			_popup.MouseEnter -= Popup_Interaction;
+			_popup.PreviewMouseLeftButtonDown -= Popup_Interaction;
+			_popup.MouseEnter += Popup_Interaction;
+			_popup.PreviewMouseLeftButtonDown += Popup_Interaction;
+		}
+
+		private void Popup_Interaction(object? sender, EventArgs e)
+		{
+			_popup.MouseEnter -= Popup_Interaction;
+			_popup.PreviewMouseLeftButtonDown -= Popup_Interaction;
+			_popup.Activate();
+			_popup.Focus();
 		}
 
 		private void UpdateTooltip(string timeLeft)

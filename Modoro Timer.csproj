@@ -33,6 +33,7 @@
 		<PackageReference Include="FluentWPF" Version="0.10.2" />
 		<PackageReference Include="Hardcodet.NotifyIcon.Wpf" Version="2.0.1" />
 		<PackageReference Include="NHotkey.Wpf" Version="3.0.0" />
+		<PackageReference Include="WPF-UI" Version="4.0.3" />
 	</ItemGroup>
 
 	<ItemGroup>

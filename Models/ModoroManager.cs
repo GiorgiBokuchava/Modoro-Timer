@@ -3,6 +3,8 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
 using System.Windows.Threading;
+using Wpf.Ui;
+using Wpf.Ui.Controls;
 
 namespace Modoro_Timer.Models
 {
@@ -21,7 +23,16 @@ namespace Modoro_Timer.Models
 
 		public string RemainingTime => _remainingTime.ToString(@"mm\:ss");
 		public ModoroSessionType CurrentSessionType { get; private set; }
-		public string PauseResumeText => _isRunning ? "⏸ Pause" : "▶ Resume";
+		public SymbolFilled PauseResumeSymbol
+		=> _isRunning
+			? SymbolFilled.Pause20
+			: SymbolFilled.Play20;
+
+		public SymbolFilled SkipSymbol
+			=> SymbolFilled.FastForward20;
+
+		public SymbolFilled ResetSymbol
+			=> SymbolFilled.ArrowReset20;
 
 		private int _currentSessionIndex;
 		public int CurrentSessionIndex
@@ -233,7 +244,7 @@ namespace Modoro_Timer.Models
 			OnPropertyChanged(nameof(RemainingTime));
 			OnPropertyChanged(nameof(CurrentSessionType));
 			OnPropertyChanged(nameof(SessionTypeDisplay));
-			OnPropertyChanged(nameof(PauseResumeText));
+			OnPropertyChanged(nameof(PauseResumeSymbol));
 		}
 
 		protected void OnPropertyChanged([CallerMemberName] string? name = null)
