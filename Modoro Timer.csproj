@@ -66,4 +66,8 @@
 		</None>
 	</ItemGroup>
 
+	<ItemGroup>
+	  <Folder Include="docs\ModoroTimer\" />
+	</ItemGroup>
+
 </Project>
