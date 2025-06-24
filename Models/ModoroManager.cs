@@ -20,6 +20,7 @@ namespace Modoro_Timer.Models
 		public event PropertyChangedEventHandler? PropertyChanged;
 		public event Action<string> OnTickUpdate = delegate { };
 		public event Action? OnReset;
+		public event Action<ModoroSessionType>? OnSessionCompleted;
 
 		public string RemainingTime => _remainingTime.ToString(@"mm\:ss");
 		public ModoroSessionType CurrentSessionType { get; private set; }
@@ -123,6 +124,7 @@ namespace Modoro_Timer.Models
 			else
 			{
 				Stop();
+				OnSessionCompleted?.Invoke(CurrentSessionType);
 				StartNextSession();
 			}
 		}

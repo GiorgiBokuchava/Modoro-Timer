@@ -34,17 +34,15 @@ namespace Modoro_Timer.Views
 			Settings.Default.PopupTop = this.Top;
 			Settings.Default.Save();
 		}
+
+		// Tab focus handling
 		private void Window_PreviewMouseDown(object sender, MouseButtonEventArgs e)
 		{
-			// If the click landed on one of your ui:Buttons, do nothing special
 			if (e.OriginalSource is ButtonBase)
 				return;
 
-			// 1) Clear the focused button
 			Keyboard.ClearFocus();
 
-			// 2) Re-focus the window so it still receives key events (ESC, etc.)
-			//    Make sure your FluentWindow has Focusable="True" in XAML!
 			this.Focus();
 		}
 	}

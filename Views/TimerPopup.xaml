@@ -28,13 +28,14 @@
         <Grid>
             <!-- The ring itself -->
             <controls:CircularProgressRing
-          Fraction="{Binding ProgressFraction}"
-          Width="180" Height="180"
-          HorizontalAlignment="Center"
-          VerticalAlignment="Center"/>
+                Fraction="{Binding ProgressFraction}"
+                Width="180" Height="180"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Margin="0,0,0,50"/>
 
             <!-- Time & dots on top -->
-            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,0,0,50">
                 <TextBlock
                     Text="{Binding RemainingTime}"
                     FontSize="28"
@@ -43,7 +44,8 @@
                 <ItemsControl 
                     ItemsSource="{Binding SessionDots}"
                     Padding="0,0,0,0"
-                    IsTabStop="False">
+                    IsTabStop="False"
+                    Margin="0,0,0,0">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center"/>
@@ -68,7 +70,7 @@
                 Foreground="White"
                 HorizontalAlignment="Center"
                 VerticalAlignment="Center"
-                Panel.ZIndex="1" Padding="0,0,0,90"/>
+                Panel.ZIndex="1" Padding="0,0,0,90" Margin="0,0,0,50"/>
 
             <!-- Controls at the bottom -->
             <StackPanel
@@ -84,7 +86,8 @@
                     Icon="{Binding PauseResumeSymbol}"
                     Foreground="White"
                     Content=""
-                    Margin="0,0,10,0"/>
+                    Margin="0,0,10,0"
+                    ToolTip="Play/Pause"/>
 
                 <!-- Skip Button -->
                 <ui:Button
@@ -93,7 +96,8 @@
                     Icon="{Binding SkipSymbol}"
                     Foreground="White"
                     Content="" 
-                    Margin="0,0,10,0"/>
+                    Margin="0,0,10,0"
+                    ToolTip="Skip Session"/>
 
                 <!-- Reset Button -->
                 <ui:Button
@@ -101,7 +105,8 @@
                     Command="{Binding ResetCommand}"
                     Icon="{Binding ResetSymbol}"
                     Foreground="White"
-                    Content="" />
+                    Content=""
+                    ToolTip="Reset Timer"/>
 
             </StackPanel>
         </Grid>

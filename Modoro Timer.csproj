@@ -9,6 +9,8 @@
 		<UseWPF>true</UseWPF>
 		<UseWindowsForms>true</UseWindowsForms>
 		<AssemblyName>Modoro_Timer</AssemblyName>
+		<PackageIcon>icon.png</PackageIcon>
+		<ApplicationIcon>Assets\icon.ico</ApplicationIcon>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -54,6 +56,10 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<None Update="Assets\icon.png">
+		  <Pack>True</Pack>
+		  <PackagePath>\</PackagePath>
+		</None>
 		<None Update="Properties\Settings.settings">
 			<Generator>SettingsSingleFileGenerator</Generator>
 			<LastGenOutput>Settings.Designer.cs</LastGenOutput>

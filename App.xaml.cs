@@ -7,6 +7,7 @@ using System.Runtime.Versioning;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Forms; // Add this for ContextMenuStrip
 using Control = System.Windows.Forms.Control;
 using MouseButtons = System.Windows.Forms.MouseButtons;
 using NotifyIcon = System.Windows.Forms.NotifyIcon;
@@ -23,6 +24,7 @@ namespace Modoro_Timer
 		private ModoroManager _modoro = null!;
 		private Point _lastClickPx;
 		private DateTime _popupHideTime = DateTime.MinValue;
+		private ContextMenuStrip _trayMenu = null!;
 
 		protected override void OnStartup(StartupEventArgs e)
 		{
@@ -31,6 +33,19 @@ namespace Modoro_Timer
 			_modoro.OnTickUpdate += UpdateTooltip;
 			_popup = new TimerPopup(_modoro);
 
+			// Add notifications for session completion
+			_modoro.OnSessionCompleted += sessionType =>
+			{
+				string message = sessionType switch
+				{
+					ModoroSessionType.Focus => "Focus session complete! Time for a break.",
+					ModoroSessionType.ShortBreak => "Short break over! Back to focus.",
+					ModoroSessionType.LongBreak => "Long break over! Back to focus.",
+					_ => "Session complete!"
+				};
+				_trayIcon.ShowBalloonTip(3000, "Modoro Timer", message, ToolTipIcon.Info);
+			};
+
 			// Outside popup click behavior
 			_popup.Deactivated += (s, args) =>
 			{
@@ -38,16 +53,36 @@ namespace Modoro_Timer
 				_popupHideTime = DateTime.Now;
 			};
 
+			// Context menu for tray icon
+			_trayMenu = new ContextMenuStrip();
+			var showTimerItem = new ToolStripMenuItem("Show Timer");
+			showTimerItem.Click += (s, args) =>
+			{
+				ShowPopupAt(new Point(Settings.Default.LastClickX, Settings.Default.LastClickY));
+			};
+			var quitItem = new ToolStripMenuItem("Quit");
+			quitItem.Click += (s, args) => Shutdown();
+
+			_trayMenu.Items.Add(showTimerItem);
+			_trayMenu.Items.Add(new ToolStripSeparator());
+			_trayMenu.Items.Add(quitItem);
+
 			_trayIcon = new NotifyIcon
 			{
 				Icon = new System.Drawing.Icon("Assets/icon.ico"),
 				Text = "Modoro Timer",
-				Visible = true
+				Visible = true,
+				ContextMenuStrip = _trayMenu
 			};
 
 			// Tray icon click behavior
 			_trayIcon.MouseDown += (s, args) =>
 			{
+				if (args.Button == MouseButtons.Right)
+				{
+					_trayMenu.Show(Control.MousePosition);
+					return;
+				}
 				if (args.Button != MouseButtons.Left)
 					return;
 
