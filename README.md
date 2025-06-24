@@ -65,7 +65,7 @@ Modoro Timer lives in your system tray, providing quick access to focus and brea
 
 ## Requirements
 
-- Windows 7 or later (Windows 10/11 recommended)
+- Windows 11
 - .NET 9 Runtime
 
 ---
