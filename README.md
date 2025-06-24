@@ -4,6 +4,13 @@ A modern Pomodoro-style timer for Windows, built with WPF and .NET 9.
 Modoro Timer lives in your system tray, providing quick access to focus and break sessions, visual progress, and convenient controls.
 
 ---
+### Screenshot
+
+![screenshot1](https://github.com/user-attachments/assets/041fb995-bfd1-40e8-bc6f-c754b2d5edc7)
+![screenshot2](https://github.com/user-attachments/assets/f8c9d07f-dc09-4bdb-aaf1-347b8830dc21)
+![screenshot3](https://github.com/user-attachments/assets/a00623d3-d435-4db0-91fb-87d5b45b5469)
+
+---
 
 ## Features
 
