@@ -11,6 +11,7 @@
 		<AssemblyName>Modoro_Timer</AssemblyName>
 		<PackageIcon>icon.png</PackageIcon>
 		<ApplicationIcon>Assets\icon.ico</ApplicationIcon>
+		<RuntimeIdentifier>win-64</RuntimeIdentifier>
 	</PropertyGroup>
 
 	<ItemGroup>
